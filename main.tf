@@ -11,7 +11,7 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rules" {
     for_each = each.value.rules
     content {
       name                  = rule.value.name
-      protocols             = upper(rule.value.protocols)
+      protocols             = rule.value.protocols
       description           = rule.value.description
       source_addresses      = rule.value.source_addresses
       source_ip_groups      = rule.value.source_ip_groups
