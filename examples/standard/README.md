@@ -58,8 +58,8 @@ module "firewall_rules" {
 
   nat_rule_collections = [
     {
-      name = "dnat-rules"
-      action = "Dnat"
+      name     = "dnat-rules"
+      action   = "Dnat"
       priority = 100
       rules = [
         {
