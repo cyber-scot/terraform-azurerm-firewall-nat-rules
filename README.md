@@ -10,7 +10,7 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rules" {
   action              = title(each.value.action)
 
   dynamic "rule" {
-    for_each = each.value.rules != null ? [each.value.rules] : []
+    for_each = each.value.rules
     content {
       name                  = rule.value.name
       protocols             = rule.value.protocols
