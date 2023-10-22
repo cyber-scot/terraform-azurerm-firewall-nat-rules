@@ -49,9 +49,9 @@ module "firewall" {
 }
 
 module "firewall_rules" {
-  source = "../../"
+  source = "cyber-scot/firewall-nat-rules/azurerm"
 
-  rg_name       = module.rg.rg_name
+  rg_name       = module.firewall.firewall_rg_name
   firewall_name = module.firewall.firewall_name
 
   nat_rule_collections = [
@@ -62,73 +62,15 @@ module "firewall_rules" {
       rules = [
         {
           name                  = "DNAT-HTTP"
-          description           = "DNAT rule for HTTP traffic"
-          destination_addresses = ["203.0.113.1"]
+          protocols             = ["TCP"]
+          source_addresses      = ["10.0.0.0/16"]
           destination_ports     = ["80"]
-          protocols             = ["TCP"]
-          source_addresses      = ["10.0.0.0/16"]
-          translated_address    = "192.168.1.1"
-          translated_ports      = 8080
-        },
-        {
-          name                  = "DNAT-HTTPS"
-          description           = "DNAT rule for HTTPS traffic"
-          destination_addresses = ["203.0.113.1"]
-          destination_ports     = ["443"]
-          protocols             = ["TCP"]
-          source_addresses      = ["10.0.0.0/16"]
-          translated_address    = "192.168.1.1"
-          translated_ports      = 8443
-        },
-        {
-          name                  = "DNAT-DNS"
-          description           = "DNAT rule for DNS traffic"
-          destination_addresses = ["203.0.113.1"]
-          destination_ports     = ["53"]
-          protocols             = ["UDP"]
-          source_addresses      = ["10.0.0.0/16"]
-          translated_address    = "192.168.1.1"
-          translated_ports      = 53
+          destination_addresses = [module.firewall.firewall_data_public_ip_address]
+          translated_address    = "10.0.1.4"
+          translated_ports      = "8080"
         }
       ]
     },
-    {
-      name     = "snat-rules"
-      action   = "Snat"
-      priority = 200
-      rules = [
-        {
-          name                  = "SNAT-HTTP"
-          description           = "SNAT rule for HTTP traffic"
-          destination_addresses = ["0.0.0.0/0"]
-          destination_ports     = ["80"]
-          protocols             = ["TCP"]
-          source_addresses      = ["10.0.0.0/16"]
-          translated_address    = "203.0.113.1"
-          translated_ports      = 80
-        },
-        {
-          name                  = "SNAT-HTTPS"
-          description           = "SNAT rule for HTTPS traffic"
-          destination_addresses = ["0.0.0.0/0"]
-          destination_ports     = ["443"]
-          protocols             = ["TCP"]
-          source_addresses      = ["10.0.0.0/16"]
-          translated_address    = "203.0.113.1"
-          translated_ports      = 443
-        },
-        {
-          name                  = "SNAT-DNS"
-          description           = "SNAT rule for DNS traffic"
-          destination_addresses = ["0.0.0.0/0"]
-          destination_ports     = ["53"]
-          protocols             = ["UDP"]
-          source_addresses      = ["10.0.0.0/16"]
-          translated_address    = "203.0.113.1"
-          translated_ports      = 53
-        }
-      ]
-    }
   ]
 }
 
